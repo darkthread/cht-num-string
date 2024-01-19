@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<script>
+    var ChtNumConverter = {
+        ChtNums: "零一二三四五六七八九",
+        ChtUnits: {
+            "十": 10,
+            "百": 100,
+            "千": 1000,
+            "萬": 10000,
+            "億": 100000000,
+            "兆": 1000000000000
+        },
+
+        ParseChtNum: function (chtNumString) {
+            var isNegative = false;
+            if (chtNumString.startsWith("負")) {
+                chtNumString = chtNumString.substring(1);
+                isNegative = true;
+            }
+            var num = 0;
+
+            function Parse4Digits(s) {
+                var lastDigit = 0;
+                var subNum = 0;
+                for (var rawChar of s) {
+                    var c = rawChar.replace("〇", "零");
+                    if (this.ChtNums.includes(c)) {
+                        lastDigit = this.ChtNums.indexOf(c);
+                    } else if (this.ChtUnits[c]) {
+                        if (c === "十" && lastDigit === 0) lastDigit = 1;
+                        var unit = this.ChtUnits[c];
+                        subNum += lastDigit * unit;
+                        lastDigit = 0;
+                    } else {
+                        throw new Error(`Contains unparsable Chinese numerals: ${c}`);
+                    }
+                }
+                subNum += lastDigit;
+                return subNum;
+            }
+
+            for (var splitUnit of "兆億萬") {
+                var pos = chtNumString.indexOf(splitUnit);
+                if (pos === -1) continue;
+                var subNumString = chtNumString.substring(0, pos);
+                chtNumString = chtNumString.substring(pos + 1);
+                num += Parse4Digits.call(this, subNumString) * this.ChtUnits[splitUnit];
+            }
+            num += Parse4Digits.call(this, chtNumString);
+            return isNegative ? -num : num;
+        },
+
+        ToChtNum: function (n) {
+            var negative = n < 0;
+            if (negative) n = -n;
+            if (n >= 10000 * this.ChtUnits["兆"])
+                throw new Error("Number exceeds convertible range");
+            var unitChars = [..."千百十"];
+            function Conv4Digits(subNum) {
+                var sb = '';
+                for (var c of unitChars) {
+                    if (subNum >= this.ChtUnits[c]) {
+                        var digit = Math.floor(subNum / this.ChtUnits[c]);
+                        subNum = subNum % this.ChtUnits[c];
+                        sb += `${this.ChtNums[digit]}${c}`;
+                    } else sb += "零";
+                }
+                sb += this.ChtNums[subNum];
+                return sb;
+            }
+            var numString = '';
+            var forceRun = false;
+            for (var splitUnit of "兆億萬") {
+                var unit = this.ChtUnits[splitUnit];
+                if (n < unit) {
+                    if (forceRun) numString += "零";
+                    continue;
+                }
+                forceRun = true;
+                var subNum = Math.floor(n / unit);
+                n = n % unit;
+                if (subNum > 0)
+                    numString += Conv4Digits.call(this, subNum).replace(/零+$/, '') + splitUnit;
+                else numString += "零";
+            }
+            numString += Conv4Digits.call(this, n);
+            var t = numString.replace(/零+/g, '零');
+            if (t.length > 1) t = t.replace(/零+$/, '');
+            t = t.replace(/^一十/, "十");
+            return (negative ? "負" : "") + t;
+        }
+    };
+    var numSets = [
+        "0000", "0001", "0010", "0012",
+        "0100", "0102", "0310", "0123",
+        "1000", "1002", "1020", "1023",
+        "1200", "1203", "1230", "1234"
+    ];
+
+    var count = numSets.length;
+    var idxs = new Array(3).fill(0);
+    var lv = idxs.length - 1;
+
+    while (true) {
+        var sb = '';
+        for (var i = 0; i < idxs.length; i++) {
+            sb += numSets[idxs[i]];
+        }
+        var n = parseInt(sb);
+        var cht = ChtNumConverter.ToChtNum(n);
+        var restored = ChtNumConverter.ParseChtNum(cht);
+        console.log(`${n} ${restored} ` + (n == restored ? "PASS" : "FAIL") + ` ${cht} `);
+        if (n != restored)
+            throw new Error(`Number conversion error ${n} vs ${restored}`);
+        if (idxs.every(o => o == count - 1)) break;
+        idxs[lv]++;
+        while (idxs[lv] == count) {
+            idxs[lv] = 0;
+            lv--;
+            if (lv < 0) break;
+            idxs[lv]++;
+        }
+        lv = idxs.length - 1;
+    }
+</script>
+
+</html>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cht-num-string", "cht-num-string.csproj", "{E0862A21-C836-4AE8-AC69-36ADF0F28873}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E0862A21-C836-4AE8-AC69-36ADF0F28873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0862A21-C836-4AE8-AC69-36ADF0F28873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0862A21-C836-4AE8-AC69-36ADF0F28873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0862A21-C836-4AE8-AC69-36ADF0F28873}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {984CE582-3835-4C39-8271-98C8A1D6A906}
+	EndGlobalSection
+EndGlobal
