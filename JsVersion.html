@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <body></body>
 <script>
     var ChtNumConverter = {
         ChtNums: "零一二三四五六七八九",
@@ -101,6 +102,8 @@
     var count = numSets.length;
     var idxs = new Array(3).fill(0);
     var lv = idxs.length - 1;
+    
+    var results = [];
 
     while (true) {
         var sb = '';
@@ -110,7 +113,7 @@
         var n = parseInt(sb);
         var cht = ChtNumConverter.ToChtNum(n);
         var restored = ChtNumConverter.ParseChtNum(cht);
-        console.log(`${n} ${restored} ` + (n == restored ? "PASS" : "FAIL") + ` ${cht} `);
+        results.push(`${n} ${restored} ` + (n == restored ? "PASS" : "FAIL") + ` ${cht} `);
         if (n != restored)
             throw new Error(`Number conversion error ${n} vs ${restored}`);
         if (idxs.every(o => o == count - 1)) break;
@@ -123,6 +126,17 @@
         }
         lv = idxs.length - 1;
     }
+
+    const blob = new Blob([results.join("\r\n")], { type: "text/plain;charset=utf-8" });
+    const url = window.URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    downloadLink.download = "js-result.txt";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    
+
+    
 </script>
 
 </html>
