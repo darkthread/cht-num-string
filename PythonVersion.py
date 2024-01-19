@@ -1,3 +1,5 @@
+import re
+
 class ChtNumConverter:
     def __init__(self):
         self.ChtNums = "零一二三四五六七八九"
@@ -81,10 +83,10 @@ class ChtNumConverter:
             else:
                 numString += "零"
         numString += Conv4Digits(n)
-        t = numString.replace("零", '零')
+        t = re.sub("零+", "零", numString)
         if len(t) > 1:
-            t = t.rstrip('零')
-        t = t.replace("一十", "十")
+            t = t.rstrip("零").lstrip("零")
+        t = re.sub("^一十", "十", t)
         return ("負" if negative else "") + t
 
 
@@ -96,7 +98,7 @@ numSets = [
 ]
 
 count = len(numSets)
-idxs = [0, 0, 0]
+idxs = [0, 0, 0, 0]
 lv = len(idxs) - 1
 
 converter = ChtNumConverter()

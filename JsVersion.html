@@ -82,12 +82,12 @@
                 var subNum = Math.floor(n / unit);
                 n = n % unit;
                 if (subNum > 0)
-                    numString += Conv4Digits.call(this, subNum).replace(/零+$/, '') + splitUnit;
+                    numString += Conv4Digits.call(this, subNum).replace(/零+$/g, '') + splitUnit;
                 else numString += "零";
             }
             numString += Conv4Digits.call(this, n);
             var t = numString.replace(/零+/g, '零');
-            if (t.length > 1) t = t.replace(/零+$/, '');
+            if (t.length > 1) t = t.replace(/零+$/g, '').replace(/^零+/g, '');
             t = t.replace(/^一十/, "十");
             return (negative ? "負" : "") + t;
         }
@@ -100,7 +100,7 @@
     ];
 
     var count = numSets.length;
-    var idxs = new Array(3).fill(0);
+    var idxs = new Array(4).fill(0);
     var lv = idxs.length - 1;
     
     var results = [];
